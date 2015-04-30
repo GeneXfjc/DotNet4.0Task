@@ -3,8 +3,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Diagnostics;
+using Fjc.DataSrc;
+using Fjc.AsyncUtility;
 
-namespace Base40UseAsync
+namespace Fjc.AsyncUtility
 {
     class MainClass
     {
@@ -16,7 +18,7 @@ namespace Base40UseAsync
             var used = new UseClass();
             //Async
             var tasks = IDs.Select(used.AsyncMethod);
-            var taskEnume = new AsyncEnumerable<string>(tasks);
+            var taskEnume = new EnumeTaskCreator<string>(tasks);
             //Sync
             foreach (var item in IDs.Select(i=>used.AsyncMethod(i)))
             {
@@ -44,7 +46,7 @@ namespace Base40UseAsync
                                 tRes=> new NameInfo(i,tRes)
                             );
             });
-            var Async03 = new AsyncEnumerable<NameInfo>(taks03);
+            var Async03 = new EnumeTaskCreator<NameInfo>(taks03);
             foreach (var item in Async03)
             {
                 Console.WriteLine(item);
