@@ -6,7 +6,16 @@ using System.Threading.Tasks;
 
 namespace Fjc.AsyncUtility
 {
-    //LinqTask<T>から結果を非同期で列挙します。
+    /*--------------------------------------------------------------
+    IEnumerable<Task<T>>から非同期処理を実行し結果を列挙します。
+    使用方法：  var Linq_Tasks = Enumerable.Range(1,100).Select(CreateTask);
+              var AsyncResult = new EnumeTaskCreator<NameInfo>(Linq_taks);
+              foreach (var item in Async03)Console.WriteLine(item);
+    */
+
+    /// <summary>
+    /// IEnumerable<Task<T>>から非同期処理を実行し結果を列挙します。
+    /// </summary>
     public class EnumeTaskCreator<T>:IEnumerable<T>
     {
         List<Task<T>> _Tasks;
