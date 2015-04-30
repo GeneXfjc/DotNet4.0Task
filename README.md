@@ -2,8 +2,11 @@
 C#における.Net4.0 Task非同期の使い方
 
 ### 使い方
+
 * 直前までTask.Resultを使用しないData Classを活用する。
+
 ### 便利なUtility
+
 * 拡張Method
    Extentions
 * Generic
