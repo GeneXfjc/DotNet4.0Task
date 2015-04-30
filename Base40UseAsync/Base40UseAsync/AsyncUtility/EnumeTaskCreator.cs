@@ -11,6 +11,7 @@ namespace Fjc.AsyncUtility
     使用方法：  var Linq_Tasks = Enumerable.Range(1,100).Select(CreateTask);
               var AsyncResult = new EnumeTaskCreator<NameInfo>(Linq_taks);
               foreach (var item in Async03)Console.WriteLine(item);
+    ToDo:   Task Cancelle機能の追加
     */
 
     /// <summary>
@@ -26,7 +27,6 @@ namespace Fjc.AsyncUtility
         public IEnumerator<T> GetEnumerator()
         {
             //必要に応じてキャッシュを利用することも考えるべき
-            //特にキャンセルがこの処理から利用できると嬉しいかも
             var tasks = new List<Task<T>>(_Tasks);
             while (tasks.Count > 0)
             {

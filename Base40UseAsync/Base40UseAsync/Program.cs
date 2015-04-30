@@ -6,7 +6,7 @@ using System.Diagnostics;
 using Fjc.DataSrc;
 using Fjc.AsyncUtility;
 
-namespace Fjc.AsyncUtility
+namespace Base40UseAsync
 {
     class MainClass
     {
@@ -15,42 +15,40 @@ namespace Fjc.AsyncUtility
             var sw = new Stopwatch();
             sw.Start();
             var IDs = Enumerable.Range(11, 10);
-            var used = new UseClass();
+            var used = new UseAsyncClass();
             //Async
             var tasks = IDs.Select(used.AsyncMethod);
             var taskEnume = new EnumeTaskCreator<string>(tasks);
+            StopWatchWrite(sw, "StartSync");
             //Sync
             foreach (var item in IDs.Select(i=>used.AsyncMethod(i)))
             {
                     Console.WriteLine (item.Result);
             }
-//            for (int i = 0; i < 20; i++)
-//            {
-//                System.Threading.Thread.Sleep(100);
-//            }
-            StopWatchWrite(sw, "SyncMethod");
+            StopWatchWrite(sw, "EndSync");
 
-            //Async
-            foreach (var item in taskEnume)
-            {
-                Console.WriteLine(item);
-            }
+
+            //Async01
+            //非同期処理結果を表示
+            StopWatchWrite(sw, "StartAsync");
+            foreach (var item in taskEnume) Console.WriteLine(item);
             StopWatchWrite(sw, "EndAsync");
-            var taks03 = IDs.Select(i =>
+
+            //非同期処理後になんらかの加工を実施するLinqここでは処理されない。
+            var ProcessedTask = IDs.Select(i =>
             {
-                    var resTask =used.AsyncMethod(i);
-                    //なんらかの加工が必要なばい
-                    //task処理後のTaskをContinueWith内で処理する。
-                    //終了タスクに変更を加える
-                    return  resTask.ContinueWith(
-                                tRes=> new NameInfo(i,tRes)
-                            );
+                var resTask =used.AsyncMethod(i);
+                //非同期処理後に戻り値データをTaskをContinueWith内で2次処理する。
+                //終了タスクから戻り値を取り出すresTask.ResultはNGここでWait()しない
+                return  resTask.ContinueWith(
+                            tRes=> new NameInfo(i,tRes)
+                        );
             });
-            var Async03 = new EnumeTaskCreator<NameInfo>(taks03);
-            foreach (var item in Async03)
-            {
-                Console.WriteLine(item);
-            }
+            //Linqで記述したProcessdTaskはここではじめて遅延処理される。
+            var TaskList = new EnumeTaskCreator<NameInfo>(ProcessedTask);
+            //ProcessedTaskで2次処理されたTaskのIEnumerable<>を処理する
+            foreach (var item in TaskList) Console.WriteLine(item);
+            
         }
         public static void StopWatchWrite(Stopwatch sw,string msg)
         {

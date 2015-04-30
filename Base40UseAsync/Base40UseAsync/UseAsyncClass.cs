@@ -4,24 +4,25 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Fjc.AsyncUtility
+namespace Base40UseAsync
 {
-    
-
-    public class UseClass
+    /// <summary>
+    /// よくある非同期処理を含むClass
+    /// </summary>
+    public class UseAsyncClass
     {
-        public UseClass()
-        {
-        }
+        //同期メソッド
         public string SyncMethod(int i)
         {
+            //本来ならSocket等でブロッキングされる。
+            System.Threading.Thread.Sleep(1000);
             return string.Format("Name{0:D3}", i);
         }
+        //非同期メソッド
         public Task<string> AsyncMethod(int i)
         {
             return Task.Factory.StartNew(() =>
             {
-                System.Threading.Thread.Sleep(800);
                 return SyncMethod(i);
             });
         }

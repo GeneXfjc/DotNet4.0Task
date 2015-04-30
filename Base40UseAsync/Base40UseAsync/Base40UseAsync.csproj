@@ -35,9 +35,9 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UseClass.cs" />
     <Compile Include="DataSrc\NameInfo.cs" />
     <Compile Include="AsyncUtility\EnumeTaskCreator.cs" />
+    <Compile Include="UseAsyncClass.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
