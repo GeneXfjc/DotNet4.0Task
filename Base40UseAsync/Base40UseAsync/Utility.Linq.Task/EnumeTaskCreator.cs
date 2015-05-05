@@ -81,6 +81,8 @@ namespace Fjc.AsyncUtility
 //        private static IEnumerable<TResult> RecTask<T,TResult>(Func<T,TResult> func,Task<T> tsk){
 //            yield return  func(tsk.Result);
 //            RecurSerialProcess(IEnum,Dlgt);
+          //ここからFunc<Task<T>,TResult> がうまくいきません
+        //どうしましょう？　５月日０２時に　もう眠いやめよう
 //        }
         public static IEnumerable<TResult> SelialProcessing<T,TResult>( this IEnumerable<Task<T>> IEnum,Func<T,TResult> actDlgt)
         {
