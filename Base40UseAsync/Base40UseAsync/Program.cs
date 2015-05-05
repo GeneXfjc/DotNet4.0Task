@@ -13,46 +13,72 @@ namespace Base40UseAsync
         public static void Main(string[] args)
         {
             var sw = new Stopwatch();
+
+            var IDs = Enumerable.Range(0, 30);
+            var used = new UseAsyncClass("Ramdm");
             sw.Start();
-            var IDs = Enumerable.Range(11, 10);
-            var used = new UseAsyncClass();
-            //Async
-            var tasks = IDs.Select(used.AsyncMethod);
-            var taskEnume = new EnumeTaskCreator<string>(tasks);
-            StopWatchWrite(sw, "StartSync");
-            //Sync
-            foreach (var item in IDs.Select(i=>used.AsyncMethod(i)))
-            {
-                    Console.WriteLine (item.Result);
-            }
-            StopWatchWrite(sw, "EndSync");
+            #region 同期で実施
+            //StopWatchWrite(sw, "StartSync");
+            ////Sync
+            //foreach (var item in IDs.Select(used.AsyncMethod))
+            //{
+            //    //結局ここで待機Resultするので同期処理となります。
+            //    Console.WriteLine(item.Result);
+            //}
+            //StopWatchWrite(sw, "EndSync");
+            #endregion
 
+            ////Async
+            StopWatchWrite(sw, "InitAsyncStart");
+            //IEnumerable<Task<string>>が帰っていきます。
+            //var tasks = IDs.Select(new UseAsyncClass("Ramdm").AsyncMethod40);
+                
+            //StopWatchWrite(sw, "InitAsyncEnd--");
+            
+            //StopWatchWrite(sw, "StartTasks");
+            ////ここで一気に開始
+            //var taskEnume = new EnumeTaskCreator<string>(tasks);
+            //StopWatchWrite(sw, "End  Tasks");
+            ////Async01　非同期処理は最初から最後まで非同期でロジックを組むこと
+            ////非同期処理結果を表示
+            //StopWatchWrite(sw, "StartAsync");
+            //foreach (var item in taskEnume) Console.WriteLine(item);
 
-            //Async01
-            //非同期処理結果を表示
-            StopWatchWrite(sw, "StartAsync");
-            foreach (var item in taskEnume) Console.WriteLine(item);
-            StopWatchWrite(sw, "EndAsync");
+            //StopWatchWrite(sw, "End Async");
+            var res = IDs.Select(new UseAsyncClass("Ramdm").AsyncMethod40)
+                .MultiProcessing(t => Console.WriteLine(t));
 
+            //Async 02 
             //非同期処理後になんらかの加工を実施するLinqここでは処理されない。
+            var user02 = new UseAsyncClass("Ramdm");
+
             var ProcessedTask = IDs.Select(i =>
             {
-                var resTask =used.AsyncMethod(i);
                 //非同期処理後に戻り値データをTaskをContinueWith内で2次処理する。
                 //終了タスクから戻り値を取り出すresTask.ResultはNGここでWait()しない
-                return  resTask.ContinueWith(
-                            tRes=> new NameInfo(i,tRes)
-                        );
+                return user02.AsyncMethod40(i)
+                    .ContinueWith( tRes=> new NameInfo(i,tRes)  );
             });
+
+            //上記をもう少しスマートに書き直すと
+            var ProcessedTask01 = IDs.Select(i => user02.AsyncMethod40(i))
+                .Select(t => t.ContinueWith(tRes => new NameInfo(tRes.Id, tRes)));
+
             //Linqで記述したProcessdTaskはここではじめて遅延処理される。
-            var TaskList = new EnumeTaskCreator<NameInfo>(ProcessedTask);
+            //var TaskList = new EnumeTaskCreator<NameInfo>(ProcessedTask);
             //ProcessedTaskで2次処理されたTaskのIEnumerable<>を処理する
-            foreach (var item in TaskList) Console.WriteLine(item);
-            
+            //foreach (var item in TaskList) Console.WriteLine(item);
+
+            //拡張メソッドで対応してる
+            ProcessedTask01.SelialProcessing( t => Console.WriteLine(t));
+
+            //逐次非同期処理を開始
+
+            Console.ReadKey();
         }
         public static void StopWatchWrite(Stopwatch sw,string msg)
         {
-            Console.WriteLine("{0}:{1}",msg,sw.ElapsedMilliseconds);
+            Console.WriteLine("{0}:{1}",msg,sw.Elapsed.ToString());
         }
 
     }

@@ -17,13 +17,18 @@ namespace Fjc.AsyncUtility
     /// <summary>
     /// IEnumerable<Task<T>>から非同期処理を実行し結果を列挙します。
     /// </summary>
-    public class EnumeTaskCreator<T>:IEnumerable<T>
+    public class EnumeTaskCreator<T>:IEnumerable<T> 
     {
         List<Task<T>> _Tasks;
+        public List<Task<T>> Tasks
+        {
+            get { return _Tasks; }
+        }
         public EnumeTaskCreator(IEnumerable<Task<T>> task)
         {
             _Tasks = task.ToList();
         }
+        //終了したタスクから結果を戻す。
         public IEnumerator<T> GetEnumerator()
         {
             //必要に応じてキャッシュを利用することも考えるべき
@@ -32,7 +37,9 @@ namespace Fjc.AsyncUtility
             {
                 var endTask = Task.WhenAny(tasks);
                 var t = endTask.Result;
+                if (!t.IsCompleted) continue;
                 tasks.Remove(t);
+                
                 yield return t.Result;
             }
         }
@@ -40,6 +47,46 @@ namespace Fjc.AsyncUtility
         {
             return this.GetEnumerator(); 
         } 
+    }
+    public static class IEnumerableTaskExtention
+    {
+        public static void SelialProcessing<T>( this IEnumerable<Task<T>> enumTask,Action<T> actDlgt)
+        {
+            var terator = enumTask.GetEnumerator();
+            Action a = null;
+
+            a = () =>
+            {
+                if(terator.MoveNext())
+                {
+                    var tsk = terator.Current;
+                    tsk.ContinueWith(t =>
+                    {
+                        actDlgt(t.Result);
+                        a();
+                    });
+                }
+            };
+
+            a();
+        }
+        public static object MultiProcessing<T>(this IEnumerable<Task<T>> enumTask, Action<T> actDlgt)
+        {
+            var tsks = new EnumeTaskCreator<T>(enumTask);
+            foreach (var item in tsks)
+            {
+                actDlgt(item);
+            }
+            return null;
+        }
+        public static IEnumerable<TResult> MultiProcessing<T, TResult>(this IEnumerable<Task<T>> enumTask, Func<T, TResult> actDlgt)
+        {
+            var tsks = new EnumeTaskCreator<T>(enumTask);
+            foreach (var item in tsks)
+            {
+                yield return actDlgt(item);
+            }
+        }
     }
 }
 

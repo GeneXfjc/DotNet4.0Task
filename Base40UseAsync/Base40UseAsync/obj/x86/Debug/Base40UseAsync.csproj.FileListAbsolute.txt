@@ -1,0 +1,5 @@
+I:\Develop\GitGenexfjc\DotNet40Task\Base40UseAsync\Base40UseAsync\obj\x86\Debug\Base40UseAsync.exe
+I:\Develop\GitGenexfjc\DotNet40Task\Base40UseAsync\Base40UseAsync\bin\Debug\Base40UseAsync.exe
+I:\Develop\GitGenexfjc\DotNet40Task\Base40UseAsync\Base40UseAsync\bin\Debug\Base40UseAsync.pdb
+I:\Develop\GitGenexfjc\DotNet40Task\Base40UseAsync\Base40UseAsync\obj\x86\Debug\Base40UseAsync.csprojResolveAssemblyReference.cache
+I:\Develop\GitGenexfjc\DotNet40Task\Base40UseAsync\Base40UseAsync\obj\x86\Debug\Base40UseAsync.pdb
