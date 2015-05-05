@@ -60,7 +60,7 @@ namespace Fjc.AsyncUtility
         {
             if(IEnum.MoveNext())
             {
-                var tsk = IEnum.Current;
+                var tsk = IEnum.Current.ContinueWith(t => t.Result);
                 yield return Dlgt(tsk.Result);
                 var ResEnum =RecurSerialProcess(IEnum,Dlgt);
                 foreach (var item in ResEnum)
@@ -69,13 +69,33 @@ namespace Fjc.AsyncUtility
                 }
             }   
         }
+        //
+        private static IEnumerable<TResult> LoopSerialProcess<T,TResult>(IEnumerator<Task<T>> IEnum,Func<T,TResult> Dlgt)
+        {
+            while (IEnum.MoveNext())
+            {
+                var tsk = IEnum.Current.ContinueWith(t => t.Result);
+                yield return Dlgt(tsk.Result);
+            }
+        }
 //        private static IEnumerable<TResult> RecTask<T,TResult>(Func<T,TResult> func,Task<T> tsk){
 //            yield return  func(tsk.Result);
 //            RecurSerialProcess(IEnum,Dlgt);
 //        }
-        public static IEnumerable<TResult> SelialProcessing<T,TResult>( this IEnumerable<Task<T>> enumTask,Func<T,TResult> actDlgt)
+        public static IEnumerable<TResult> SelialProcessing<T,TResult>( this IEnumerable<Task<T>> IEnum,Func<T,TResult> actDlgt)
         {
-            return RecurSerialProcess(enumTask.GetEnumerator(), actDlgt);
+            Task.Factory.StartNew(() =>
+                {
+                    var IRator = IEnum.GetEnumerator();
+                    while (IRator.MoveNext())
+                    {
+                        var tsk = IRator.Current.ContinueWith(t => t.Result);
+                        yield return actDlgt(tsk.Result);
+                    }
+                });
+//            //var Res = RecurSerialProcess(enumTask.GetEnumerator(), actDlgt);
+//            //return Res;
+            //return LoopSerialProcess(enumTask.GetEnumerator(), actDlgt);
 //            var terator = enumTask.GetEnumerator();
 //
 //            Action a = null;

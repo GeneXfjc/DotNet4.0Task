@@ -11,8 +11,8 @@ namespace Base40UseAsync
     /// </summary>
     public class UseAsyncClass
     {
-        const int TIME_SP = 600;
-        const int TiMe_MX = 3000;
+        const int TIME_SP = 100;
+        const int TiMe_MX = 6000;
         object LockObj = new object();
         
         int WAIT = 0;
@@ -31,18 +31,18 @@ namespace Base40UseAsync
         }
         public string SyncMethod(int num)
         {
-                int count = 0;
-                string resMark = string.Empty;
-                //本来ならSocket等でブロッキングされる。
-                var wAit = GetWaitTime();
-                for (int i = wAit; i > TIME_SP; i -= TIME_SP)
-                {
-                    System.Threading.Thread.Sleep(TIME_SP );
-                    resMark += "*";
-                    count++;
-                }
+            int count = 0;
+            string resMark = string.Empty;
+            //本来ならSocket等でブロッキングされる。
+            var wAit = GetWaitTime();
+            for (int i = wAit; i > TIME_SP; i -= TIME_SP)
+            {
+                System.Threading.Thread.Sleep(TIME_SP );
+                resMark += "*";
+                count++;
+            }
 
-                return CreateName(wAit, num, resMark);
+            return CreateName(wAit, num, resMark);
         }
         //非同期メソッド
         public Task<string> AsyncMethod(int i)

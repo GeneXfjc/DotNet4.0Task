@@ -14,7 +14,7 @@ namespace Base40UseAsync
         {
             var sw = new Stopwatch();
 
-            var IDs = Enumerable.Range(0, 30);
+            var IDs = Enumerable.Range(0, 10);
             var used = new UseAsyncClass("Ramdm");
             sw.Start();
             #region 同期で実施
@@ -29,7 +29,7 @@ namespace Base40UseAsync
             #endregion
 
             ////Async
-            StopWatchWrite(sw, "InitAsyncStart");
+            //StopWatchWrite(sw, "InitAsyncStart");
             //IEnumerable<Task<string>>が帰っていきます。
             //var tasks = IDs.Select(new UseAsyncClass("Ramdm").AsyncMethod40);
                 
@@ -45,24 +45,28 @@ namespace Base40UseAsync
             //foreach (var item in taskEnume) Console.WriteLine(item);
 
             //StopWatchWrite(sw, "End Async");
-            var res = IDs.Select(new UseAsyncClass("Ramdm").AsyncMethod40)
-                .MultiProcessing(t => Console.WriteLine(t));
+
+            //かなり見通しの良いラムダ式
+//            var res = IDs.Select(new UseAsyncClass("Ramdm").AsyncMethod40)
+//                .MultiProcessing(t => Console.WriteLine(t));
 
             //Async 02 
             //非同期処理後になんらかの加工を実施するLinqここでは処理されない。
             var user02 = new UseAsyncClass("Ramdm");
 
-            var ProcessedTask = IDs.Select(i =>
-            {
-                //非同期処理後に戻り値データをTaskをContinueWith内で2次処理する。
-                //終了タスクから戻り値を取り出すresTask.ResultはNGここでWait()しない
-                return user02.AsyncMethod40(i)
-                    .ContinueWith( tRes=> new NameInfo(i,tRes)  );
-            });
 
-            //上記をもう少しスマートに書き直すと
-            var ProcessedTask01 = IDs.Select(i => user02.AsyncMethod40(i))
-                .Select(t => t.ContinueWith(tRes => new NameInfo(tRes.Id, tRes)));
+            //非同期内のラムダ式が美しくない
+//            var ProcessedTask = IDs.Select(i =>
+//            {
+//                //非同期処理後に戻り値データをTaskをContinueWith内で2次処理する。
+//                //終了タスクから戻り値を取り出すresTask.ResultはNGここでWait()しない
+//                return user02.AsyncMethod40(i)
+//                    .ContinueWith( tRes=> new NameInfo(i,tRes)  );
+//            });
+//
+//            //上記をもう少しスマートに書き直すと
+//            var ProcessedTask01 = IDs.Select(i => user02.AsyncMethod40(i))
+//                .Select(t => t.ContinueWith(tRes => new NameInfo(tRes.Id, tRes)));
 
             //Linqで記述したProcessdTaskはここではじめて遅延処理される。
             //var TaskList = new EnumeTaskCreator<NameInfo>(ProcessedTask);
@@ -70,9 +74,15 @@ namespace Base40UseAsync
             //foreach (var item in TaskList) Console.WriteLine(item);
 
             //拡張メソッドで対応してる
-            ProcessedTask01.SelialProcessing( t => Console.WriteLine(t));
+//            ProcessedTask01.SelialProcessing( t => Console.WriteLine(t));
 
-            //逐次非同期処理を開始
+            //全面的に拡張メソッドUtility.Linq.Taskを活用
+            IDs.Select(i => used.AsyncMethod40(i))
+                .SelialProcessing(t => 
+                {
+                        Console.WriteLine (t);
+                        return 1;
+                });
 
             Console.ReadKey();
         }

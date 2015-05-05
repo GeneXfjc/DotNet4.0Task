@@ -1,14 +1,19 @@
 ﻿<Properties StartupItem="Base40UseAsync/Base40UseAsync.csproj" GitUserInfo="UsingGIT">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Base40UseAsync/Utility.Linq.Task/EnumeTaskCreator.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Base40UseAsync/Program.cs">
     <Files>
-      <File FileName="Base40UseAsync/UseAsyncClass.cs" Line="1" Column="1" />
-      <File FileName="Base40UseAsync/DataSrc/NameInfo.cs" Line="35" Column="1" />
-      <File FileName="Base40UseAsync/Utility.Linq.Task/EnumeTaskCreator.cs" Line="90" Column="110" />
+      <File FileName="Base40UseAsync/UseAsyncClass.cs" Line="48" Column="40" />
+      <File FileName="Base40UseAsync/Program.cs" Line="80" Column="28" />
+      <File FileName="Base40UseAsync/Utility.Linq.Task/EnumeTaskCreator.cs" Line="93" Column="13" NotebookId="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
+    <BreakpointStore>
+      <Breakpoint file="/Users/fujic/Documents/Develop/GitGeneXfjc/DotNet4.0Task/Base40UseAsync/Base40UseAsync/Utility.Linq.Task/EnumeTaskCreator.cs" line="61" column="1" />
+      <Breakpoint file="/Users/fujic/Documents/Develop/GitGeneXfjc/DotNet4.0Task/Base40UseAsync/Base40UseAsync/Utility.Linq.Task/EnumeTaskCreator.cs" line="88" column="1" />
+      <Breakpoint file="/Users/fujic/Documents/Develop/GitGeneXfjc/DotNet4.0Task/Base40UseAsync/Base40UseAsync/Utility.Linq.Task/EnumeTaskCreator.cs" line="87" column="1" />
+      <Breakpoint file="/Users/fujic/Documents/Develop/GitGeneXfjc/DotNet4.0Task/Base40UseAsync/Base40UseAsync/Utility.Linq.Task/EnumeTaskCreator.cs" line="85" column="1" />
+    </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches>
     <Watch file="../dotNet4BeginReadEndReadToAsync/dotNet4BeginReadEndReadToAsync/BeginEndToAsyncTask.cs" line="45" offsetX="381" offsetY="660" expression="outStream.CanRead" liveUpdate="False" />
