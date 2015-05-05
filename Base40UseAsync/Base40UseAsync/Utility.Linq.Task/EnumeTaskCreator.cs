@@ -48,11 +48,58 @@ namespace Fjc.AsyncUtility
             return this.GetEnumerator(); 
         } 
     }
+    /*-------------------------------------------------------------------
+     *  Linq To Task で非同期(IEnumerable<Task<T>>)を同期(IEnumerable<T>) 
+     *  に変換する拡張クラス  
+     *  備考: Linq Generic拡張Mtthodは戻り値がvoid型とTResultの二つMethodを定義
+     *-------------------------------------------------------------------*/
     public static class IEnumerableTaskExtention
     {
+        //課題　発生　Yield Return は　デリゲートの中で使用できないのです。　
+        private static IEnumerable<TResult> RecurSerialProcess<T,TResult>(IEnumerator<Task<T>> IEnum,Func<T,TResult> Dlgt)
+        {
+            if(IEnum.MoveNext())
+            {
+                var tsk = IEnum.Current;
+                yield return Dlgt(tsk.Result);
+                var ResEnum =RecurSerialProcess(IEnum,Dlgt);
+                foreach (var item in ResEnum)
+                {
+                    yield return item;
+                }
+            }   
+        }
+//        private static IEnumerable<TResult> RecTask<T,TResult>(Func<T,TResult> func,Task<T> tsk){
+//            yield return  func(tsk.Result);
+//            RecurSerialProcess(IEnum,Dlgt);
+//        }
+        public static IEnumerable<TResult> SelialProcessing<T,TResult>( this IEnumerable<Task<T>> enumTask,Func<T,TResult> actDlgt)
+        {
+            return RecurSerialProcess(enumTask.GetEnumerator(), actDlgt);
+//            var terator = enumTask.GetEnumerator();
+//
+//            Action a = null;
+            //            //Action a() デリゲートを変換し
+//            a = () =>
+//                {
+//                    if(terator.MoveNext())
+//                    {
+//                        var tsk = terator.Current;
+//                        tsk.ContinueWith(t =>
+//                            {
+            //ラムダ式の中でyield return は使えないです。なので上記のRecurSerialProcessメソッドで再帰yield return やってますまだ間違ってるかの性あり５月５日深夜
+//                                yield return actDlgt(t.Result);
+//                                a();
+//                            });
+//                    }
+//                };
+//
+//            a();
+        }
         public static void SelialProcessing<T>( this IEnumerable<Task<T>> enumTask,Action<T> actDlgt)
         {
             var terator = enumTask.GetEnumerator();
+
             Action a = null;
 
             a = () =>
