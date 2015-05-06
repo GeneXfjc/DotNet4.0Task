@@ -55,7 +55,8 @@ namespace Fjc.AsyncUtility
      *-------------------------------------------------------------------*/
     public static class IEnumerableTaskExtention
     {
-        //課題　発生　Yield Return は　デリゲートの中で使用できないのです。　
+        
+        //Can not  yield return  In  Delegate Method. Use Statment.
         private static IEnumerable<TResult> RecurSerialProcess<T,TResult>(IEnumerator<Task<T>> IEnum,Func<T,TResult> Dlgt)
         {
             if(IEnum.MoveNext())
@@ -69,7 +70,7 @@ namespace Fjc.AsyncUtility
                 }
             }   
         }
-        //
+        //Looped Result Enumerable
         private static IEnumerable<TResult> LoopSerialProcess<T,TResult>(IEnumerator<Task<T>> IEnum,Func<T,TResult> Dlgt)
         {
             while (IEnum.MoveNext())
@@ -81,43 +82,19 @@ namespace Fjc.AsyncUtility
 //        private static IEnumerable<TResult> RecTask<T,TResult>(Func<T,TResult> func,Task<T> tsk){
 //            yield return  func(tsk.Result);
 //            RecurSerialProcess(IEnum,Dlgt);
-          //ここからFunc<Task<T>,TResult> がうまくいきません
-        //どうしましょう？　５月日０２時に　もう眠いやめよう
+         
 //        }
         public static IEnumerable<TResult> SelialProcessing<T,TResult>( this IEnumerable<Task<T>> IEnum,Func<T,TResult> actDlgt)
         {
-            Task.Factory.StartNew(() =>
-                {
-                    var IRator = IEnum.GetEnumerator();
-                    while (IRator.MoveNext())
-                    {
-                        var tsk = IRator.Current.ContinueWith(t => t.Result);
-                        yield return actDlgt(tsk.Result);
-                    }
-                });
-//            //var Res = RecurSerialProcess(enumTask.GetEnumerator(), actDlgt);
-//            //return Res;
-            //return LoopSerialProcess(enumTask.GetEnumerator(), actDlgt);
-//            var terator = enumTask.GetEnumerator();
-//
-//            Action a = null;
-            //            //Action a() デリゲートを変換し
-//            a = () =>
-//                {
-//                    if(terator.MoveNext())
-//                    {
-//                        var tsk = terator.Current;
-//                        tsk.ContinueWith(t =>
-//                            {
-            //ラムダ式の中でyield return は使えないです。なので上記のRecurSerialProcessメソッドで再帰yield return やってますまだ間違ってるかの性あり５月５日深夜
-//                                yield return actDlgt(t.Result);
-//                                a();
-//                            });
-//                    }
-//                };
-//
-//            a();
+//            var Array = IEnum.ToArray();
+//            foreach (var item in Array)
+//            {
+//                yield return actDlgt(item.Result);
+//            }
+//            return LoopSerialProcess(IEnum.GetEnumerator(),actDlgt);
+            return RecurSerialProcess(IEnum.GetEnumerator(),actDlgt); 
         }
+
         public static void SelialProcessing<T>( this IEnumerable<Task<T>> enumTask,Action<T> actDlgt)
         {
             var terator = enumTask.GetEnumerator();
@@ -139,14 +116,15 @@ namespace Fjc.AsyncUtility
 
             a();
         }
-        public static object MultiProcessing<T>(this IEnumerable<Task<T>> enumTask, Action<T> actDlgt)
+        public static void MultiProcessing<T>(this IEnumerable<Task<T>> enumTask, Action<T> actDlgt)
         {
             var tsks = new EnumeTaskCreator<T>(enumTask);
             foreach (var item in tsks)
             {
                 actDlgt(item);
+                //yield return item;
             }
-            return null;
+
         }
         public static IEnumerable<TResult> MultiProcessing<T, TResult>(this IEnumerable<Task<T>> enumTask, Func<T, TResult> actDlgt)
         {

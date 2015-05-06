@@ -11,8 +11,8 @@ namespace Base40UseAsync
     /// </summary>
     public class UseAsyncClass
     {
-        const int TIME_SP = 100;
-        const int TiMe_MX = 6000;
+        const int TIME_SP = 1000;
+        const int TiMe_MX = 10000;
         object LockObj = new object();
         
         int WAIT = 0;

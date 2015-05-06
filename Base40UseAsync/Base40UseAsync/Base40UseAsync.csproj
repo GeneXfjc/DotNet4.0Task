@@ -18,7 +18,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
-    <Externalconsole>true</Externalconsole>
+    <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <DebugType>full</DebugType>
@@ -43,5 +43,8 @@
   <ItemGroup>
     <Folder Include="DataSrc\" />
     <Folder Include="Utility.Linq.Task\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Gleaning.txt" />
   </ItemGroup>
 </Project>

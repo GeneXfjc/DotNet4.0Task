@@ -1,0 +1,43 @@
+﻿
+            ////Async
+            //StopWatchWrite(sw, "InitAsyncStart");
+            //IEnumerable<Task<string>>が帰っていきます。
+            //var tasks = IDs.Select(new UseAsyncClass("Ramdm").AsyncMethod40);
+                
+            //StopWatchWrite(sw, "InitAsyncEnd--");
+            
+            //StopWatchWrite(sw, "StartTasks");
+            ////ここで一気に開始
+            //var taskEnume = new EnumeTaskCreator<string>(tasks);
+            //StopWatchWrite(sw, "End  Tasks");
+            ////Async01　非同期処理は最初から最後まで非同期でロジックを組むこと
+            ////非同期処理結果を表示
+            //StopWatchWrite(sw, "StartAsync");
+            //foreach (var item in taskEnume) Console.WriteLine(item);
+
+            //StopWatchWrite(sw, "End Async");
+
+            //かなり見通しの良いラムダ式
+//            var res = IDs.Select(new UseAsyncClass("Ramdm").AsyncMethod40)
+//                .MultiProcessing(t => Console.WriteLine(t));
+
+            //Async 02 
+            //非同期処理後になんらかの加工を実施するLinqここでは処理されない。
+            var user02 = new UseAsyncClass("Ramdm");
+
+
+            //非同期内のラムダ式が美しくない
+//            var ProcessedTask = IDs.Select(i =>
+//            {
+//                //非同期処理後に戻り値データをTaskをContinueWith内で2次処理する。
+//                //終了タスクから戻り値を取り出すresTask.ResultはNGここでWait()しない
+//                return user02.AsyncMethod40(i)
+//                    .ContinueWith( tRes=> new NameInfo(i,tRes)  );
+//            });
+//
+//   
+			Linqで記述したProcessdTaskはここではじめて遅延処理される。
+            var TaskList = new EnumeTaskCreator<NameInfo>(ProcessedTask);
+            ProcessedTaskで2次処理されたTaskのIEnumerable<>を処理する
+            foreach (var item in TaskList) Console.WriteLine(item);
+       
